@@ -1,6 +1,7 @@
 import React from 'react';
-import { useUser, SignInButton, SignUpButton, UserButton } from '@clerk/clerk-react';
+import { useUser, SignInButton, SignUpButton } from '@clerk/clerk-react';
 import { Navbar, Container, Nav } from 'react-bootstrap';
+import { UserButton } from '@clerk/clerk-react';
 
 const CustomNavbar = () => {
   const { user } = useUser();
@@ -11,11 +12,11 @@ const CustomNavbar = () => {
         <Navbar.Brand href="/">Chronos AI</Navbar.Brand>
         <Nav className="ms-auto d-flex align-items-center">
           {user ? (
-            <UserButton className="btn btn-outline-primary" afterSignOutUrl='/' />
+            <UserButton className="btn btn-outline-primary" afterSignOutUrl="/" />
           ) : (
             <div className="btn-group" role="group" aria-label="Authentication buttons">
-              <SignInButton buttonMode="button" className="btn btn-primary" />
-              <SignUpButton buttonMode="button" className="btn btn-secondary" />
+              <SignInButton mode="modal" className="btn btn-primary" />
+              <SignUpButton mode="modal" className="btn btn-secondary" afterSignUpUrl="/register-user" />
             </div>
           )}
         </Nav>

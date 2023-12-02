@@ -1,14 +1,10 @@
-import React from 'react';
+import React from "react";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ClerkProvider, SignedIn, SignedOut } from '@clerk/clerk-react';
+import { ClerkProvider, SignedIn } from '@clerk/clerk-react';
 import LandingPage from './LandingPage';
-import Dashboard from './Dashboard'; // Assuming you create this component
+import Dashboard from './Dashboard';
+import RegisterUserPage from './utils/RegisterUserPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-
-if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
-  throw "Missing Publishable Key";
-}
 
 const clerkPubKey = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 
@@ -18,11 +14,16 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/dashboard" element={
-            <SignedIn>
-              <Dashboard />
-            </SignedIn>
-          } />
+          <Route path="/register-user" element={<RegisterUserPage />} />
+          <Route 
+            path="/dashboard" 
+            element={
+              <SignedIn>
+                <Dashboard />
+              </SignedIn>
+            } 
+          />
+          {/* Other routes */}
         </Routes>
       </BrowserRouter>
     </ClerkProvider>

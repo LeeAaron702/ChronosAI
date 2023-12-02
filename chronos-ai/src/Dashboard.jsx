@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
-import CustomNavbar from './Components/Navbar'; // Make sure the path is correct
+import CustomNavbar from './Components/Navbar'; // Ensure the path is correct
 
 const Dashboard = () => {
-  const { user } = useUser();
   const navigate = useNavigate();
+  const { user } = useUser();
 
   useEffect(() => {
+    // Redirect to landing page if not signed in
     if (!user) {
       navigate('/');
     }
