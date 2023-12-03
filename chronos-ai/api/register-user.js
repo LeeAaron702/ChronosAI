@@ -1,34 +1,46 @@
-// chronos-ai/api/register-user.js
-import { sql } from '@vercel/postgres';
+import { createClient } from '@supabase/supabase-js';
+
+// Initialize the Supabase client
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-  console.log('Request body:', req.body);
-
-  const { clerkUserId, email, name } = req.body;
-
-  try {
-    // First, check if the user already exists
-    const existingUser = await sql`
-      SELECT * FROM users WHERE clerk_user_id = ${clerkUserId}
-    `;
-
-    if (existingUser.count > 0) {
-      // User already exists, no need to insert
-      return res.status(409).json({ error: 'User already exists' });
+    if (req.method !== 'POST') {
+        return res.status(405).end('Method not allowed');
     }
 
-    // User does not exist, proceed to insert
-    const result = await sql`
-      INSERT INTO users (clerk_user_id, email, name)
-      VALUES (${clerkUserId}, ${email}, ${name})
-      RETURNING *;
-    `;
+    const { clerkUserId, email, name } = req.body;
 
-    return res.status(200).json(result);
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
+    try {
+        // Check if the user already exists
+        const { data: existingUser, error: findError } = await supabase
+            .from('users')
+            .select('*')
+            .eq('clerk_user_id', clerkUserId)
+            .maybeSingle();
+
+        if (findError) {
+            console.error('Error finding user:', findError);
+            return res.status(500).json({ error: 'Error finding user' });
+        }
+
+        if (existingUser) {
+            return res.status(409).json({ error: 'User already exists' });
+        }
+
+        // Insert the new user
+        const { data, error: insertError } = await supabase
+            .from('users')
+            .insert([{ clerk_user_id: clerkUserId, email, name }]);
+
+        if (insertError) {
+            console.error('Error inserting user:', insertError);
+            return res.status(500).json({ error: 'Error inserting user' });
+        }
+
+        // Return the inserted user data
+        return res.status(200).json(data);
+    } catch (error) {
+        console.error('Error in handler:', error.message);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
 }
