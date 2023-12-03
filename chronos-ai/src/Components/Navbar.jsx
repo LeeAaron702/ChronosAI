@@ -7,9 +7,9 @@ const CustomNavbar = () => {
   const { user } = useUser();
 
   return (
-    <Navbar bg="light" expand="lg" sticky="top">
-      <Container>
-        <Navbar.Brand href="/">Chronos AI</Navbar.Brand>
+    <Navbar bg="light" expand="lg" sticky="top" style={{ width: '100%' }}>
+      <Container fluid>
+        <Navbar.Brand href="/" style={{ marginLeft: '2%' }}>Chronos AI</Navbar.Brand>
         <Nav className="ms-auto d-flex align-items-center">
           {user ? (
             <UserButton className="btn btn-outline-primary" afterSignOutUrl="/" />

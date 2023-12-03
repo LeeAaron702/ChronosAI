@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useClerk, useUser } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from './Components/Navbar';
 
 const LandingPage = () => {
   const { openSignIn, openSignUp } = useClerk();
@@ -16,7 +15,6 @@ const LandingPage = () => {
 
   return (
     <div>
-      <Navbar />
       <div className="container mt-4">
         <h1>LandingPage</h1>
         <button className="btn btn-primary me-2" onClick={() => openSignIn()}>Login</button>

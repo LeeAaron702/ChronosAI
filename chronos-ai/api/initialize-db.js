@@ -1,4 +1,3 @@
-// api/initialize-db.js
 import { sql } from '@vercel/postgres';
 
 export default async function handler(req, res) {
@@ -30,19 +29,19 @@ export default async function handler(req, res) {
       organization_id INTEGER REFERENCES organizations(id) NULL
     );`;
 
-    // Workspaces table
+    // Workspaces table - updated owner_id to VARCHAR
     await sql`CREATE TABLE IF NOT EXISTS workspaces (
       id SERIAL PRIMARY KEY,
       name VARCHAR(255) NOT NULL,
       is_shared BOOLEAN NOT NULL DEFAULT false,
-      owner_id INTEGER REFERENCES users(id) NULL,
+      owner_id VARCHAR(255) REFERENCES users(clerk_user_id) NULL,
       organization_id INTEGER REFERENCES organizations(id) NULL
     );`;
 
     // Notes table
     await sql`CREATE TABLE IF NOT EXISTS notes (
       id SERIAL PRIMARY KEY,
-      workspace_id INTEGER REFERENCES workspaces(id),
+      workspace_id INTEGER REFERENCES workspaces(id) ON DELETE CASCADE,
       title VARCHAR(255) NOT NULL,
       content TEXT
     );`;
