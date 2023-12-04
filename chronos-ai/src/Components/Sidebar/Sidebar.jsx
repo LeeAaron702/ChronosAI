@@ -3,7 +3,7 @@ import { Accordion, Col, useAccordionButton } from "react-bootstrap";
 import AddWorkspace from "./AddWorkspace";
 import WorkspaceList from "./WorkspaceList";
 
-const Sidebar = ({ userId, workspaceTitles, fetchWorkspaces }) => {
+const Sidebar = ({ userId, workspaces, fetchWorkspaces, onCreateNote }) => {
   // Custom hook to toggle accordion on small screens
   function CustomToggle({ children, eventKey }) {
     const decoratedOnClick = useAccordionButton(eventKey);
@@ -16,51 +16,54 @@ const Sidebar = ({ userId, workspaceTitles, fetchWorkspaces }) => {
 
   const onEdit = async (workspaceId, newTitle) => {
     try {
-      const response = await fetch('/api/updateWorkspace', {
-        method: 'PUT',
+      const response = await fetch("/api/updateWorkspace", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ workspaceId, newTitle })
+        body: JSON.stringify({ workspaceId, newTitle }),
       });
-  
+
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
-  
-      fetchWorkspaces();
+
+    await  fetchWorkspaces();
     } catch (error) {
-      console.error('Error updating workspace:', error);
+      console.error("Error updating workspace:", error);
     }
   };
-  
+
   const onDelete = async (workspaceId, title) => {
     try {
-      const response = await fetch('/api/deleteWorkspace', {
-        method: 'DELETE',
+      const response = await fetch("/api/deleteWorkspace", {
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ workspaceId, title })
+        body: JSON.stringify({ workspaceId, title }),
       });
-  
+
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
-  
-      fetchWorkspaces();
+
+      // Assuming that the deletion was successful
+      const data = await response.json();
+
+      // Now, you can update the list of workspaces
+     await fetchWorkspaces();
     } catch (error) {
-      console.error('Error deleting workspace:', error);
+      console.error("Error deleting workspace:", error);
     }
   };
-  
-  
 
   const workspaceList = (
-    <WorkspaceList 
-      workspaceTitles={workspaceTitles} 
+    <WorkspaceList
+      workspaces={workspaces}
       onEdit={onEdit}
       onDelete={onDelete}
+      onCreateNote={onCreateNote}
     />
   );
 
@@ -86,7 +89,10 @@ const Sidebar = ({ userId, workspaceTitles, fetchWorkspaces }) => {
       </div>
 
       {/* This div will hide on small screens and show on medium and larger screens */}
-      <Col md={2} className="sidebar d-none d-md-flex flex-column align-items-center pt-3">
+      <Col
+   
+        className="d-none d-md-flex flex-column align-items-left"
+      >
         {addWorkspace}
         {workspaceList}
       </Col>

@@ -3,19 +3,26 @@ import { useUser } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import Sidebar from './Components/Sidebar/Sidebar';
+import NoteEditor from './Components/NoteEditor'; 
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user } = useUser();
-  const [workspaceTitles, setWorkspaceTitles] = useState([]);
+  const [workspaces, setWorkspaces] = useState([]);
+  const [currentNote, setCurrentNote] = useState(null);
+
+  const handleCreateNote = (workspaceId) => {
+    // Logic to create a new note
+    setCurrentNote({ workspaceId, content: "" }); // This is just a placeholder
+  };
 
   const fetchWorkspaces = async () => {
     if (user) {
       try {
         const response = await fetch(`/api/getWorkspaces?userId=${user.id}`);
         if (response.ok) {
-          const titles = await response.json();
-          setWorkspaceTitles(titles);
+          const data = await response.json();
+          setWorkspaces(data);
         } else {
           console.error('Failed to fetch workspaces');
         }
@@ -34,17 +41,17 @@ const Dashboard = () => {
   }, [user, navigate]);
 
   return (
-    <Container fluid className="px-0">
+    <Container fluid >
       <Row className="g-0">
-        <Sidebar
-          userId={user?.id}
-          workspaceTitles={workspaceTitles}
-          fetchWorkspaces={fetchWorkspaces}
-        />
-        <Col md={10} className="dashboard-content">
-          <h1>Dashboard</h1>
-          {user && <p>Welcome, {user.firstName}!</p>}
-          {/* Your dashboard content here */}
+        <Col md={3}
+        lg={2}
+        >
+          <Sidebar userId={user?.id} workspaces={workspaces} fetchWorkspaces={fetchWorkspaces} />
+        </Col>
+        <Col md={9} lg={10}>
+          <div className="dashboard-content">
+          {currentNote && <NoteEditor note={currentNote} />}
+          </div>
         </Col>
       </Row>
     </Container>

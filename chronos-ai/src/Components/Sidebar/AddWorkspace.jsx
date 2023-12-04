@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Button, Form, Switch } from 'react-bootstrap';
+import { Modal, Button, Form, Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
@@ -7,7 +7,7 @@ const AddWorkspace = ({ userId, fetchWorkspaces }) => {
   const [showModal, setShowModal] = useState(false);
   const [title, setTitle] = useState('');
   const [isShared, setIsShared] = useState(false);
-
+  const [showAlert, setShowAlert] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,17 +17,21 @@ const AddWorkspace = ({ userId, fetchWorkspaces }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title, isShared, ownerId: userId }), // Include ownerId in the request body
+        body: JSON.stringify({ title, isShared, ownerId: userId }),
       });
       if (response.ok) {
-        fetchWorkspaces(); // Refresh the workspace list
-        alert('Workspace added successfully!');
-        // Reset form and close modal
+        fetchWorkspaces();
+        setShowModal(false);
+        setShowAlert(true);
         setTitle('');
         setIsShared(false);
-        setShowModal(false);
+
+        // Automatically hide the alert after 3 seconds (adjust the time as needed)
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 3000);
       } else {
-        alert('Failed to add workspace.');
+        setShowAlert(false);
       }
     } catch (error) {
       console.error('Error adding workspace:', error);
@@ -36,7 +40,7 @@ const AddWorkspace = ({ userId, fetchWorkspaces }) => {
 
   return (
     <>
-   <Button className="mb-3" variant="ghost" onClick={() => setShowModal(true)}>
+      <Button className="mt-2 mb-1" variant="ghost" onClick={() => setShowModal(true)}>
         Workspace <FontAwesomeIcon icon={faPlus} />
       </Button>
 
@@ -46,7 +50,7 @@ const AddWorkspace = ({ userId, fetchWorkspaces }) => {
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3">
+            <Form.Group >
               <Form.Label>Workspace Title</Form.Label>
               <Form.Control
                 type="text"
@@ -57,7 +61,7 @@ const AddWorkspace = ({ userId, fetchWorkspaces }) => {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Check 
+              <Form.Check
                 type="switch"
                 id="is-shared-switch"
                 label="Is Shared"
@@ -65,12 +69,19 @@ const AddWorkspace = ({ userId, fetchWorkspaces }) => {
                 onChange={(e) => setIsShared(e.target.checked)}
               />
             </Form.Group>
-            <Button variant="primary" type="submit">
+            <Button variant="outline-dark" type="submit">
               Submit
             </Button>
           </Form>
+
         </Modal.Body>
       </Modal>
+      {/* Bootstrap React Alert positioned at the bottom */}
+      <div className="position-absolute bottom-0 start-50 translate-middle-x">
+        <Alert variant="success" show={showAlert} onClose={() => setShowAlert(false)} dismissible>
+          Workspace added successfully!
+        </Alert>
+      </div>
     </>
   );
 };

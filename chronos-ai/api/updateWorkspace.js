@@ -14,8 +14,8 @@ export default async function handler(req, res) {
     const { data, error } = await supabase
       .from('workspaces')
       .update({ name: newTitle })
-      .eq('id', workspaceId);
-
+      .eq('id', workspaceId)
+      .select();
     if (error) {
       throw error;
     }

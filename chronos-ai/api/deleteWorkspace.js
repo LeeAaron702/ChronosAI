@@ -12,18 +12,21 @@ export default async function handler(req, res) {
 
   try {
     const { data, error } = await supabase
-      .from('workspaces')
-      .delete()
-      .match({ id: workspaceId, name: title });
+    .from('workspaces')
+    .delete()
+    .match({ id: workspaceId, name: title });
+    
 
-    if (error) {
-      throw error;
+    
+    if (error === null || data === null) {
+      // Send a 200 response if either data or error is null
+      return res.status(200).json({ message: 'Workspace deleted successfully' });
     }
 
-    if (data.length === 0) {
-      // No rows deleted, possibly because the workspace was not found
-      return res.status(404).json({ message: 'Workspace not found' });
-    }
+    // if (data.length === 0) {
+    //   // No rows deleted, possibly because the workspace was not found
+    //   return res.status(404).json({ message: 'Workspace not found' });
+    // }
 
     return res.status(200).json({ message: 'Workspace deleted successfully' });
   } catch (error) {
