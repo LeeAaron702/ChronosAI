@@ -2,13 +2,17 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
-const WorkspaceEditModal = ({ show, handleClose, workspaceId, workspaceName, onEdit }) => {
+const WorkspaceEditModal = ({ show, handleClose, workspace, workspaceName, onEdit }) => {
   const [newTitle, setNewTitle] = useState(workspaceName);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setNewTitle('')
-    onEdit(workspaceId, newTitle);
+    if (workspace) {
+      onEdit(workspace.id, newTitle);
+    } else {
+      console.error("Cannot edit: Workspace is null");
+    }
+    setNewTitle('');
     handleClose();
   };
 

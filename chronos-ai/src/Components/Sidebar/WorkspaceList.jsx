@@ -1,25 +1,48 @@
 import React, { useState } from "react";
 import {
   Accordion,
+  Card,
   OverlayTrigger,
   Popover,
   Button,
   Container,
   Row,
   Col,
+  Nav,
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useAccordionButton } from "react-bootstrap/AccordionButton";
 import {
   faEdit,
   faTrashAlt,
   faEllipsisH,
   faCaretDown,
   faCaretRight,
-  faPlus
+  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import WorkspaceEditModal from "./WorkspaceEditModal";
 
-const WorkspaceList = ({ workspaces, onEdit, onDelete, onCreateNote }) => {
+function CustomToggle({ children, eventKey, callback }) {
+  const decoratedOnClick = useAccordionButton(eventKey, () => {
+    callback(eventKey);
+  });
+
+  return (
+    <span style={{ cursor: "pointer" }} onClick={decoratedOnClick}>
+      {children}
+    </span>
+  );
+}
+
+const WorkspaceList = ({
+  workspaces,
+  notesTitles,
+  onEdit,
+  onDelete,
+  onCreateNote,
+  onNoteClick,
+  currentNote,
+}) => {
   const [activeKey, setActiveKey] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedWorkspace, setSelectedWorkspace] = useState(null);
@@ -68,81 +91,108 @@ const WorkspaceList = ({ workspaces, onEdit, onDelete, onCreateNote }) => {
   );
 
   return (
-    <Accordion defaultActiveKey={activeKey}>
+    <Accordion activeKey={activeKey}>
       {workspaces.map((workspace) => {
-        const eventKey = workspace.id; // Use workspace id as eventKey
+        const eventKey = workspace.id.toString();
         return (
-          <Accordion.Item
-            eventKey={eventKey}
+          <Card
             key={workspace.id}
-            style={{ border: "none", marginBottom: "8px" }} // Inline style to remove border and decrease vertical space
+            style={{ background: "transparent", border: "none" }}
           >
-            <Container fluid>
-              <Row
-                className="align-items-center"
-                style={{ minHeight: "48px" }} // Decrease vertical height
-                >
-                <Col xs={1} className="text-center">
-                  <FontAwesomeIcon
-                    icon={activeKey === eventKey ? faCaretDown : faCaretRight}
-                    size="sm"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleToggle(eventKey)}
-                  />
-                </Col>
-                <Col xs={7}>
-                  <span
-                    style={{
-                      cursor: "pointer",
-                      overflowWrap: "break-word",
-                      wordWrap: "break-word",
-                    }}
-                  >
-                    {workspace.name}
-                  </span>
-                </Col>
-                <Col xs={2} className="text-end">
-                  <OverlayTrigger
-                    trigger="hover"
-                    placement="bottom"
-                    overlay={<Popover id={`popover-add-${workspace.id}`}><Popover.Body>Add a note</Popover.Body></Popover>}
-                  >
-                    <FontAwesomeIcon
-                      icon={faPlus}
-                      size="sm"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => handleCreateNote(workspace.id)}
-                    />
-                  </OverlayTrigger>
-                </Col>
-                <Col xs={1} className="text-end">
-                  <OverlayTrigger
-                    trigger="click"
-                    placement="bottom"
-                    overlay={popover(workspace)}
-                    rootClose
-                  >
-                    <FontAwesomeIcon
-                      icon={faEllipsisH}
-                      size="sm"
-                      style={{ cursor: "pointer", float: "right" }}
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                  </OverlayTrigger>
-                </Col>
-              </Row>
-            </Container>
+            {" "}
+            {/* Apply inline CSS here */}
+            <Card.Header
+              style={{
+                padding: "0.5rem .1rem",
+                background: "transparent",
+                border: "none",
+              }}
+            >
+              <Container fluid>
+                <Row className="no-gutters">
+                  <Col xs={1} className="">
+                    <CustomToggle eventKey={eventKey} callback={handleToggle}>
+                      <FontAwesomeIcon
+                        icon={
+                          activeKey === eventKey ? faCaretDown : faCaretRight
+                        }
+                        size="sm"
+                      />
+                    </CustomToggle>
+                  </Col>
+                  <Col>
+                    <span
+                      style={{
+                        cursor: "pointer",
+                        overflowWrap: "break-word",
+                        wordWrap: "break-word",
+                      }}
+                    >
+                      {workspace.name}
+                    </span>
+                  </Col>
+                  <Col xs="auto" className="text-end">
+                    <OverlayTrigger
+                      trigger={["hover", "focus"]}
+                      placement="bottom"
+                      overlay={
+                        <Popover id={`popover-add-${workspace.id}`}>
+                          <Popover.Body>Add a note</Popover.Body>
+                        </Popover>
+                      }
+                    >
+                      <FontAwesomeIcon
+                        icon={faPlus}
+                        size="sm"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleCreateNote(workspace.id)}
+                      />
+                    </OverlayTrigger>
+                  </Col>
+                  <Col xs="auto" className="text-end">
+                    <OverlayTrigger
+                      trigger={["click", "focus"]}
+                      placement="bottom"
+                      overlay={popover(workspace)}
+                      rootClose
+                    >
+                      <FontAwesomeIcon
+                        icon={faEllipsisH}
+                        size="sm"
+                        style={{ cursor: "pointer" }}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    </OverlayTrigger>
+                  </Col>
+                </Row>
+              </Container>
+            </Card.Header>
             <Accordion.Collapse eventKey={eventKey}>
-              <div style={{ padding: "8px 16px" }}>No pages inside</div>
+              <Card.Body style={{ background: "transparent", border: "none" }}>
+                <Nav variant="pills" className="flex-column">
+                  {notesTitles
+                    .filter((note) => note.workspace_id === workspace.id)
+                    .map((note) => (
+                      <Nav.Item key={note.id}>
+                        <Nav.Link
+                          onClick={() => onNoteClick(note)}
+                          style={{ cursor: "pointer" }}
+                          active={currentNote && currentNote.id === note.id}
+                        >
+                          {note.title || note.id}
+                        </Nav.Link>
+                      </Nav.Item>
+                    ))}
+                </Nav>
+              </Card.Body>
             </Accordion.Collapse>
-          </Accordion.Item>
+          </Card>
         );
       })}
       <WorkspaceEditModal
         show={showEditModal}
         handleClose={closeEditModal}
-        workspaceId={selectedWorkspace?.id}
-        workspaceName={selectedWorkspace?.name}
+        workspace={selectedWorkspace}
         onEdit={onEdit}
       />
     </Accordion>

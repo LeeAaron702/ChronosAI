@@ -41,7 +41,8 @@ const AddWorkspace = ({ userId, fetchWorkspaces }) => {
   return (
     <>
       <Button className="mt-2 mb-1" variant="ghost" onClick={() => setShowModal(true)}>
-        Workspace <FontAwesomeIcon icon={faPlus} />
+        Workspace 
+        <FontAwesomeIcon icon={faPlus} className='mx-3'/>
       </Button>
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>

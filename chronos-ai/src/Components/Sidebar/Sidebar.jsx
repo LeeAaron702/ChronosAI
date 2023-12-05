@@ -3,7 +3,15 @@ import { Accordion, Col, useAccordionButton } from "react-bootstrap";
 import AddWorkspace from "./AddWorkspace";
 import WorkspaceList from "./WorkspaceList";
 
-const Sidebar = ({ userId, workspaces, fetchWorkspaces, onCreateNote }) => {
+const Sidebar = ({
+  userId,
+  workspaces,
+  fetchWorkspaces,
+  onCreateNote,
+  notesTitles,
+  fetchNotes,
+  onNoteClick,
+}) => {
   // Custom hook to toggle accordion on small screens
   function CustomToggle({ children, eventKey }) {
     const decoratedOnClick = useAccordionButton(eventKey);
@@ -28,7 +36,7 @@ const Sidebar = ({ userId, workspaces, fetchWorkspaces, onCreateNote }) => {
         throw new Error("Network response was not ok");
       }
 
-    await  fetchWorkspaces();
+      await fetchWorkspaces();
     } catch (error) {
       console.error("Error updating workspace:", error);
     }
@@ -49,10 +57,10 @@ const Sidebar = ({ userId, workspaces, fetchWorkspaces, onCreateNote }) => {
       }
 
       // Assuming that the deletion was successful
-      const data = await response.json();
+      // const data = await response.json();
 
       // Now, you can update the list of workspaces
-     await fetchWorkspaces();
+      await fetchWorkspaces();
     } catch (error) {
       console.error("Error deleting workspace:", error);
     }
@@ -61,9 +69,12 @@ const Sidebar = ({ userId, workspaces, fetchWorkspaces, onCreateNote }) => {
   const workspaceList = (
     <WorkspaceList
       workspaces={workspaces}
+      notesTitles={notesTitles}
       onEdit={onEdit}
       onDelete={onDelete}
       onCreateNote={onCreateNote}
+      fetchNotes={fetchNotes}
+      onNoteClick={onNoteClick}
     />
   );
 
@@ -89,10 +100,7 @@ const Sidebar = ({ userId, workspaces, fetchWorkspaces, onCreateNote }) => {
       </div>
 
       {/* This div will hide on small screens and show on medium and larger screens */}
-      <Col
-   
-        className="d-none d-md-flex flex-column align-items-left"
-      >
+      <Col className="d-none d-md-flex flex-column align-items-left">
         {addWorkspace}
         {workspaceList}
       </Col>
