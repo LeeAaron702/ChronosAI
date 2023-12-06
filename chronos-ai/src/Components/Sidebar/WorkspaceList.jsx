@@ -43,6 +43,7 @@ const WorkspaceList = ({
   onNoteClick,
   currentNote,
 }) => {
+  console.log("🚀 ~ file: WorkspaceList.jsx:46 ~ notesTitles:", notesTitles);
   const [activeKey, setActiveKey] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedWorkspace, setSelectedWorkspace] = useState(null);
@@ -110,7 +111,7 @@ const WorkspaceList = ({
             >
               <Container fluid>
                 <Row className="no-gutters">
-                  <Col xs={1} className="">
+                  <Col xs={1} sm={1} className="">
                     <CustomToggle eventKey={eventKey} callback={handleToggle}>
                       <FontAwesomeIcon
                         icon={
@@ -120,18 +121,24 @@ const WorkspaceList = ({
                       />
                     </CustomToggle>
                   </Col>
-                  <Col>
+                  <Col xs={8} sm={7}>
                     <span
                       style={{
                         cursor: "pointer",
                         overflowWrap: "break-word",
                         wordWrap: "break-word",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        // maxWidth: '150px', // Set the max-width to match the width of your sidebar
+                        display: "block", // Ensure this behaves as a block-level element for width to work
                       }}
+                      title={workspace.name}
                     >
                       {workspace.name}
                     </span>
                   </Col>
-                  <Col xs="auto" className="text-end">
+                  <Col xs={1} sm={1} className="text-end">
                     <OverlayTrigger
                       trigger={["hover", "focus"]}
                       placement="bottom"
@@ -168,15 +175,39 @@ const WorkspaceList = ({
               </Container>
             </Card.Header>
             <Accordion.Collapse eventKey={eventKey}>
-              <Card.Body style={{ background: "transparent", border: "none" }}>
-                <Nav variant="pills" className="flex-column">
+              <Card.Body
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  paddingTop: 0,
+                  paddingBottom: 0,
+                }}
+              >
+                <Nav
+                  variant="pills"
+                  className="flex-column"
+                  style={{ width: "100%" }}
+                >
+                  {" "}
+                  {/* Ensure Nav occupies full width */}
                   {notesTitles
                     .filter((note) => note.workspace_id === workspace.id)
                     .map((note) => (
-                      <Nav.Item key={note.id}>
+                      <Nav.Item key={note.id} style={{ width: "100%" }}>
+                        {" "}
+                        {/* Set width to 100% for Nav.Item */}
                         <Nav.Link
-                          onClick={() => onNoteClick(note)}
-                          style={{ cursor: "pointer" }}
+                          onClick={() => onNoteClick(note.id)}
+                          style={{
+                            cursor: "pointer",
+                            overflowWrap: "break-word",
+                            wordWrap: "break-word",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            width: "90%", // Set width to 100% for Nav.Link
+                            display: "block",
+                          }}
                           active={currentNote && currentNote.id === note.id}
                         >
                           {note.title || note.id}

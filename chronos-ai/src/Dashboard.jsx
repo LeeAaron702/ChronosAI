@@ -3,17 +3,26 @@ import { useUser } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
 import Sidebar from "./Components/Sidebar/Sidebar";
-import NoteEditor from "./Components/NoteEditor";
+import NoteEditor from "./Components/NoteEditor/NoteEditor";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user } = useUser();
   const [workspaces, setWorkspaces] = useState([]);
-  const [currentNote, setCurrentNote] = useState(null);
-  const [notesTitles, setNotesTitles] = useState([]);
-  // const [notes, setNotes] = useState([]);
 
- 
+
+  const [notesTitles, setNotesTitles] = useState([]);
+  const [currentNote, setCurrentNote] = useState(null);
+  const [currentNoteId, setCurrentNoteId] = useState(null);
+
+  console.log(
+    "🚀 ~ file: Dashboard.jsx:13 ~ Dashboard ~ currentNote:",
+    currentNote
+  );
+  console.log(
+    "🚀 ~ file: Dashboard.jsx:14 ~ Dashboard ~ notesTitles:",
+    notesTitles
+  );
 
   // Fetch for notes
   const fetchAllNotesTitles = async (workspaceIds) => {
@@ -57,10 +66,31 @@ const Dashboard = () => {
     }
   };
 
-  const handleNoteClick = (note) => {
-    setCurrentNote(note);
+  const updateNoteTitle = async (noteId, newTitle) => {
+    try {
+      const response = await fetch("/api/updateNoteTitle", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ noteId, newTitle }),
+      });
+      if (!response.ok) throw new Error("Failed to update note title");
+      setNotesTitles(prevTitles =>
+        prevTitles.map(note =>
+          note.id === noteId ? { ...note, title: newTitle } : note
+        )
+      );
+    } catch (error) {
+      console.error("Error updating note title:", error);
+    }
   };
 
+  const handleNoteClick = (noteId) => {
+    setCurrentNoteId(noteId);
+    const selectedNote = notesTitles.find(note => note.id === noteId);
+    setCurrentNote(selectedNote); // Set the current note object
+  };
 
 
   //  Fetch for workspaces
@@ -94,10 +124,15 @@ const Dashboard = () => {
     }
   }, [workspaces]); // Only re-run the effect if 'workspaces' changes
 
+  useEffect(() => {
+    const selectedNote = notesTitles.find(note => note.id === currentNoteId);
+    setCurrentNote(selectedNote);
+  }, [currentNoteId, notesTitles]);
+
   return (
     <Container fluid>
       <Row className="g-0">
-        <Col md={3} lg={2}>
+        <Col md={4} lg={3} xl={3}>
           <Sidebar
             fetchWorkspaces={fetchWorkspaces}
             workspaces={workspaces}
@@ -106,12 +141,16 @@ const Dashboard = () => {
             notesTitles={notesTitles}
             userId={user.id}
             onNoteClick={handleNoteClick}
-            currentNote={currentNote}
           />
         </Col>
-        <Col md={9} lg={10}>
+        <Col md={8} lg={9} xl={9}>
           <div className="dashboard-content">
-            {currentNote && <NoteEditor note={currentNote} />}
+            {currentNote && (
+              <NoteEditor
+              currentNote={currentNote}
+              updateNoteTitle={updateNoteTitle}
+              />
+            )}
           </div>
         </Col>
       </Row>

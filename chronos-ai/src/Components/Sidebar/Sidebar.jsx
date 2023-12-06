@@ -11,6 +11,7 @@ const Sidebar = ({
   notesTitles,
   fetchNotes,
   onNoteClick,
+  currentNoteId,
 }) => {
   // Custom hook to toggle accordion on small screens
   function CustomToggle({ children, eventKey }) {
@@ -75,6 +76,7 @@ const Sidebar = ({
       onCreateNote={onCreateNote}
       fetchNotes={fetchNotes}
       onNoteClick={onNoteClick}
+      currentNoteId={currentNoteId}
     />
   );
 
