@@ -2,13 +2,13 @@ import React from "react";
 import NoteTitle from "./NoteTitle";
 import NoteContent from "./NoteContent";
 
-const NoteEditor = ({ currentNote, updateNoteTitle }) => {
+const NoteEditor = ({ currentNote, currentNoteId, updateNoteTitle }) => {
   return (
     <div className="mx-3">
       <NoteTitle currentNote={currentNote} updateNoteTitle={updateNoteTitle} />
       <div>
 
-      <NoteContent />
+      <NoteContent currentNote={currentNote} />
       </div>
     </div>
   );

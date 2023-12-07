@@ -15,14 +15,6 @@ const Dashboard = () => {
   const [currentNote, setCurrentNote] = useState(null);
   const [currentNoteId, setCurrentNoteId] = useState(null);
 
-  console.log(
-    "🚀 ~ file: Dashboard.jsx:13 ~ Dashboard ~ currentNote:",
-    currentNote
-  );
-  console.log(
-    "🚀 ~ file: Dashboard.jsx:14 ~ Dashboard ~ notesTitles:",
-    notesTitles
-  );
 
   // Fetch for notes
   const fetchAllNotesTitles = async (workspaceIds) => {

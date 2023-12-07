@@ -1,7 +1,7 @@
 import React from "react";
 import { Accordion, Col, useAccordionButton } from "react-bootstrap";
 import AddWorkspace from "./AddWorkspace";
-import WorkspaceList from "./WorkspaceList";
+import WorkspaceList from "./WorkspaceList/WorkspaceList";
 
 const Sidebar = ({
   userId,

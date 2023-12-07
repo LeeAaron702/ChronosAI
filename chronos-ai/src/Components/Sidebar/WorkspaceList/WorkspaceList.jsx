@@ -43,7 +43,6 @@ const WorkspaceList = ({
   onNoteClick,
   currentNote,
 }) => {
-  console.log("🚀 ~ file: WorkspaceList.jsx:46 ~ notesTitles:", notesTitles);
   const [activeKey, setActiveKey] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedWorkspace, setSelectedWorkspace] = useState(null);
@@ -65,6 +64,12 @@ const WorkspaceList = ({
   const handleToggle = (eventKey) => {
     setActiveKey(activeKey === eventKey ? null : eventKey);
   };
+
+  const titlePopover = (title) => (
+    <Popover>
+      <Popover.Body>{title}</Popover.Body>
+    </Popover>
+  );
 
   const popover = (workspace) => (
     <Popover id={`popover-${workspace.id}`}>
@@ -100,8 +105,6 @@ const WorkspaceList = ({
             key={workspace.id}
             style={{ background: "transparent", border: "none" }}
           >
-            {" "}
-            {/* Apply inline CSS here */}
             <Card.Header
               style={{
                 padding: "0.5rem .1rem",
@@ -122,6 +125,11 @@ const WorkspaceList = ({
                     </CustomToggle>
                   </Col>
                   <Col xs={8} sm={7}>
+                    {/* <OverlayTrigger
+                      trigger={["hover", "focus"]}
+                      placement="top"
+                      overlay={titlePopover(workspace.name)}
+                    > */}
                     <span
                       style={{
                         cursor: "pointer",
@@ -137,6 +145,7 @@ const WorkspaceList = ({
                     >
                       {workspace.name}
                     </span>
+                    {/* </OverlayTrigger> */}
                   </Col>
                   <Col xs={1} sm={1} className="text-end">
                     <OverlayTrigger
@@ -188,27 +197,23 @@ const WorkspaceList = ({
                   className="flex-column"
                   style={{ width: "100%" }}
                 >
-                  {" "}
-                  {/* Ensure Nav occupies full width */}
                   {notesTitles
                     .filter((note) => note.workspace_id === workspace.id)
                     .map((note) => (
                       <Nav.Item key={note.id} style={{ width: "100%" }}>
-                        {" "}
-                        {/* Set width to 100% for Nav.Item */}
                         <Nav.Link
                           onClick={() => onNoteClick(note.id)}
+                          active={currentNote && currentNote.id === note.id}
                           style={{
                             cursor: "pointer",
                             overflowWrap: "break-word",
-                            wordWrap: "break-word",
                             whiteSpace: "nowrap",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
-                            width: "90%", // Set width to 100% for Nav.Link
+                            width: "80%", // Ensure this width is constraining the text
                             display: "block",
                           }}
-                          active={currentNote && currentNote.id === note.id}
+                          title={note.title || note.id}
                         >
                           {note.title || note.id}
                         </Nav.Link>
