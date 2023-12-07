@@ -9,8 +9,6 @@ export default async function handler(req, res) {
   console.log('get note content')
 
   const { noteId, workspaceId } = req.body;
-  console.log("🚀 ~ file: getNoteContent.js:12 ~ handler ~ workspaceId:", workspaceId)
-  console.log("🚀 ~ file: getNoteContent.js:12 ~ handler ~ noteId:", noteId)
 
   if (!noteId || !workspaceId) {
     return res.status(400).json({ error: 'Note ID and Workspace ID are required' });
@@ -22,7 +20,6 @@ export default async function handler(req, res) {
     .eq('id', noteId)
     .eq('workspace_id', workspaceId)
     .select();
-  console.log("🚀 ~ file: getNoteContent.js:25 ~ handler ~ data:", data)
 
   if (error) {
     console.error('Error fetching note content:', error);
