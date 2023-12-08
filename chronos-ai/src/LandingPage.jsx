@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
-import { useClerk, useUser } from '@clerk/clerk-react';
+import { useUser } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 
 const LandingPage = () => {
-  const { openSignIn, openSignUp } = useClerk();
   const { user } = useUser();
   const navigate = useNavigate();
 
@@ -16,9 +15,8 @@ const LandingPage = () => {
   return (
     <div>
       <div className="container mt-4">
-        <h1>LandingPage</h1>
-        <button className="btn btn-primary me-2" onClick={() => openSignIn()}>Login</button>
-        <button className="btn btn-secondary" onClick={() => openSignUp()}>Sign Up</button>
+        <h1>Chronos AI</h1>
+
       </div>
     </div>
   );

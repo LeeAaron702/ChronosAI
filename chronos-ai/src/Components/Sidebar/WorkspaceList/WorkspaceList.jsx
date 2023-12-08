@@ -47,6 +47,8 @@ const WorkspaceList = ({
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedWorkspace, setSelectedWorkspace] = useState(null);
 
+
+
   const openEditModal = (workspace) => {
     setSelectedWorkspace(workspace);
     setShowEditModal(true);
@@ -58,6 +60,7 @@ const WorkspaceList = ({
   };
 
   const handleCreateNote = (workspaceId) => {
+    setActiveKey(workspaceId.toString());
     onCreateNote(workspaceId);
   };
 
@@ -113,8 +116,8 @@ const WorkspaceList = ({
               }}
             >
               <Container fluid>
-                <Row className="no-gutters">
-                  <Col xs={1} sm={1} className="">
+                <Row>
+                  <Col xs={1} sm={1}>
                     <CustomToggle eventKey={eventKey} callback={handleToggle}>
                       <FontAwesomeIcon
                         icon={
@@ -124,7 +127,7 @@ const WorkspaceList = ({
                       />
                     </CustomToggle>
                   </Col>
-                  <Col xs={8} sm={7}>
+                  <Col sm={7} md={8} lg={7} xl={8} xxl={9}>
                     {/* <OverlayTrigger
                       trigger={["hover", "focus"]}
                       placement="top"
@@ -147,7 +150,7 @@ const WorkspaceList = ({
                     </span>
                     {/* </OverlayTrigger> */}
                   </Col>
-                  <Col xs={1} sm={1} className="text-end">
+                  <Col xs={1} sm={1}>
                     <OverlayTrigger
                       trigger={["hover", "focus"]}
                       placement="bottom"
@@ -165,7 +168,7 @@ const WorkspaceList = ({
                       />
                     </OverlayTrigger>
                   </Col>
-                  <Col xs="auto" className="text-end">
+                  <Col xs={1} sm={1}>
                     <OverlayTrigger
                       trigger={["click", "focus"]}
                       placement="bottom"
@@ -199,26 +202,40 @@ const WorkspaceList = ({
                 >
                   {notesTitles
                     .filter((note) => note.workspace_id === workspace.id)
-                    .map((note) => (
-                      <Nav.Item key={note.id} style={{ width: "100%" }}>
-                        <Nav.Link
-                          onClick={() => onNoteClick(note.id)}
-                          active={currentNote && currentNote.id === note.id}
-                          style={{
-                            cursor: "pointer",
-                            overflowWrap: "break-word",
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            width: "80%", // Ensure this width is constraining the text
-                            display: "block",
-                          }}
-                          title={note.title || note.id}
-                        >
-                          {note.title || note.id}
-                        </Nav.Link>
-                      </Nav.Item>
-                    ))}
+                    .map((note) => {
+                      const isActive = note.id === currentNote?.id;
+                      const activeStyle = isActive
+                        ? { 
+                          backgroundColor: "#D5D5D5", // Dark grey background
+                          color: "black", // Black text
+                          borderRadius: '4px', // Rounded corners similar to Notion style
+                          // width: '100%'
+                         }
+                        : {};
+
+                      return (
+                        <Nav.Item key={note.id} style={{ width: "100%" }}>
+                          <Nav.Link
+                            onClick={() => onNoteClick(note.id)}
+                            style={{
+                              cursor: "pointer",
+                              overflowWrap: "break-word",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              // width: "80%",
+                              display: "block",
+                              color: "black",
+                              padding: '3px 15px', // Reduced vertical padding, adjust as necessary
+                              ...activeStyle, // Apply custom active style here
+                            }}
+                            title={note.title}
+                          >
+                            {note.title || "Untitled"}
+                          </Nav.Link>
+                        </Nav.Item>
+                      );
+                    })}
                 </Nav>
               </Card.Body>
             </Accordion.Collapse>

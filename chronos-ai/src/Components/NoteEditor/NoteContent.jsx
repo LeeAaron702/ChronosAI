@@ -4,7 +4,6 @@ import "@blocknote/core/style.css";
 import debounce from "lodash.debounce";
 
 const NoteContent = ({ currentNote, initialContent }) => {
-  console.log("🚀 ~ file: NoteContent.jsx:7 ~ NoteContent ~ currentNote:", currentNote)
   const { id: noteId, workspace_id: workspaceId } = currentNote;
 
   // Save function that sends updated content to the server.

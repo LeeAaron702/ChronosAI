@@ -11,7 +11,8 @@ const Sidebar = ({
   notesTitles,
   fetchNotes,
   onNoteClick,
-  currentNoteId,
+  currentNote,
+  
 }) => {
   // Custom hook to toggle accordion on small screens
   function CustomToggle({ children, eventKey }) {
@@ -76,7 +77,7 @@ const Sidebar = ({
       onCreateNote={onCreateNote}
       fetchNotes={fetchNotes}
       onNoteClick={onNoteClick}
-      currentNoteId={currentNoteId}
+      currentNote={currentNote}
     />
   );
 
@@ -102,7 +103,7 @@ const Sidebar = ({
       </div>
 
       {/* This div will hide on small screens and show on medium and larger screens */}
-      <Col className="d-none d-md-flex flex-column align-items-left">
+      <Col className="d-none d-md-flex flex-column align-items-left" style={{ backgroundColor: '#f8f9fa', height: 'calc(100vh - 60px)' }}>
         {addWorkspace}
         {workspaceList}
       </Col>

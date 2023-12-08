@@ -10,7 +10,6 @@ const Dashboard = () => {
   const { user } = useUser();
   const [workspaces, setWorkspaces] = useState([]);
 
-
   const [notesTitles, setNotesTitles] = useState([]);
   const [currentNote, setCurrentNote] = useState(null);
   const [currentNoteId, setCurrentNoteId] = useState(null);
@@ -38,25 +37,30 @@ const Dashboard = () => {
   };
 
   const createNote = async (workspaceId) => {
-    try {
-      const response = await fetch("/api/createNote", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ workspaceId, userId: user.id }),
-      });
+  try {
+    const response = await fetch("/api/createNote", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ workspaceId, userId: user.id }),
+    });
 
-      if (!response.ok) {
-        throw new Error("Failed to create note");
-      }
-
-      const newNote = await response.json();
-      setCurrentNote(newNote);
-    } catch (error) {
-      console.error("Error creating note:", error);
+    if (!response.ok) {
+      throw new Error("Failed to create note");
     }
-  };
+
+    const newNote = await response.json();
+    setCurrentNote(newNote);
+    setCurrentNoteId(newNote.id); // Also update the currentNoteId
+
+    // Fetch all notes titles again to include the new note
+    const workspaceIds = workspaces.map((workspace) => workspace.id);
+    await fetchAllNotesTitles(workspaceIds);
+  } catch (error) {
+    console.error("Error creating note:", error);
+  }
+};
 
   const updateNoteTitle = async (noteId, newTitle) => {
     try {
@@ -68,8 +72,8 @@ const Dashboard = () => {
         body: JSON.stringify({ noteId, newTitle }),
       });
       if (!response.ok) throw new Error("Failed to update note title");
-      setNotesTitles(prevTitles =>
-        prevTitles.map(note =>
+      setNotesTitles((prevTitles) =>
+        prevTitles.map((note) =>
           note.id === noteId ? { ...note, title: newTitle } : note
         )
       );
@@ -80,10 +84,9 @@ const Dashboard = () => {
 
   const handleNoteClick = (noteId) => {
     setCurrentNoteId(noteId);
-    const selectedNote = notesTitles.find(note => note.id === noteId);
+    const selectedNote = notesTitles.find((note) => note.id === noteId);
     setCurrentNote(selectedNote); // Set the current note object
   };
-
 
   //  Fetch for workspaces
   const fetchWorkspaces = async () => {
@@ -117,7 +120,7 @@ const Dashboard = () => {
   }, [workspaces]); // Only re-run the effect if 'workspaces' changes
 
   useEffect(() => {
-    const selectedNote = notesTitles.find(note => note.id === currentNoteId);
+    const selectedNote = notesTitles.find((note) => note.id === currentNoteId);
     setCurrentNote(selectedNote);
   }, [currentNoteId, notesTitles]);
 
@@ -133,14 +136,19 @@ const Dashboard = () => {
             notesTitles={notesTitles}
             userId={user.id}
             onNoteClick={handleNoteClick}
+            currentNote={currentNote}
           />
         </Col>
         <Col md={8} lg={9} xl={9}>
           <div className="dashboard-content">
             {currentNote && (
               <NoteEditor
-              currentNote={currentNote}
-              updateNoteTitle={updateNoteTitle}
+                currentNote={currentNote}
+                setCurrentNoteId={setCurrentNoteId}
+                updateNoteTitle={updateNoteTitle}
+                fetchAllNotesTitles={fetchAllNotesTitles}
+                workspaces={workspaces}
+
               />
             )}
           </div>
