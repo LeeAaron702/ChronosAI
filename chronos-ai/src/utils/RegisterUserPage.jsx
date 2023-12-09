@@ -21,7 +21,6 @@ const RegisterUserPage = () => {
         })
       });
       const data = await response.json();
-      console.log('Registration response:', data);
     } catch (error) {
       console.error('Error registering user:', error);
     }

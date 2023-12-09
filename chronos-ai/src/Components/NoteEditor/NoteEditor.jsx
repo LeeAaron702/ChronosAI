@@ -8,7 +8,7 @@ import NoteHeader from "./NoteHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons"; 
 
-const NoteEditor = ({ currentNote, updateNoteTitle, fetchAllNotesTitles, workspaces, setCurrentNoteId }) => {
+const NoteEditor = ({ currentNote, updateNoteTitle, fetchAllNotesTitles, workspaces, setCurrentNoteId, user }) => {
   const { id: noteId, workspace_id: workspaceId } = currentNote;
   const [initialContent, setInitialContent] = useState(null);
   const [isLoading, setIsLoading] = useState(true);

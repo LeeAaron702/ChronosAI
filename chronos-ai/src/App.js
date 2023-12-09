@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ClerkProvider, SignedIn } from '@clerk/clerk-react';
+import { ClerkProvider, SignedIn, SignedOut } from '@clerk/clerk-react';
 import LandingPage from './LandingPage';
 import Dashboard from './Dashboard';
 import RegisterUserPage from './utils/RegisterUserPage';

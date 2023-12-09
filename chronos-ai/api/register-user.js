@@ -7,7 +7,6 @@ export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).end('Method not allowed');
     }
-
     const { clerkUserId, email, name } = req.body;
 
     try {

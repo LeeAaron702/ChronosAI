@@ -14,7 +14,6 @@ const Dashboard = () => {
   const [currentNote, setCurrentNote] = useState(null);
   const [currentNoteId, setCurrentNoteId] = useState(null);
 
-
   // Fetch for notes
   const fetchAllNotesTitles = async (workspaceIds) => {
     try {
@@ -37,30 +36,30 @@ const Dashboard = () => {
   };
 
   const createNote = async (workspaceId) => {
-  try {
-    const response = await fetch("/api/createNote", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ workspaceId, userId: user.id }),
-    });
+    try {
+      const response = await fetch("/api/createNote", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ workspaceId, userId: user.id }),
+      });
 
-    if (!response.ok) {
-      throw new Error("Failed to create note");
+      if (!response.ok) {
+        throw new Error("Failed to create note");
+      }
+
+      const newNote = await response.json();
+      setCurrentNote(newNote);
+      setCurrentNoteId(newNote.id); // Also update the currentNoteId
+
+      // Fetch all notes titles again to include the new note
+      const workspaceIds = workspaces.map((workspace) => workspace.id);
+      await fetchAllNotesTitles(workspaceIds);
+    } catch (error) {
+      console.error("Error creating note:", error);
     }
-
-    const newNote = await response.json();
-    setCurrentNote(newNote);
-    setCurrentNoteId(newNote.id); // Also update the currentNoteId
-
-    // Fetch all notes titles again to include the new note
-    const workspaceIds = workspaces.map((workspace) => workspace.id);
-    await fetchAllNotesTitles(workspaceIds);
-  } catch (error) {
-    console.error("Error creating note:", error);
-  }
-};
+  };
 
   const updateNoteTitle = async (noteId, newTitle) => {
     try {
@@ -106,10 +105,12 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    if (user) {
+    if (!user) {
+      navigate("/");
+    } else {
       fetchWorkspaces();
     }
-  }, [user]); // Only re-run the effect if 'user' changes
+  }, [user, navigate]); // Only re-run the effect if 'user' changes
 
   // Effect for fetching all notes titles after workspaces are fetched
   useEffect(() => {
@@ -148,7 +149,6 @@ const Dashboard = () => {
                 updateNoteTitle={updateNoteTitle}
                 fetchAllNotesTitles={fetchAllNotesTitles}
                 workspaces={workspaces}
-
               />
             )}
           </div>
