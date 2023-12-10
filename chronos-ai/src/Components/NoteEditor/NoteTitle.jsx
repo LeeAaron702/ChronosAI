@@ -54,7 +54,7 @@ const NoteTitle = ({ currentNote, updateNoteTitle, onDelete }) => {
       <FontAwesomeIcon 
         icon={faTrashAlt} 
         onClick={onDelete}
-        style={{ cursor: 'pointer', color: 'red', fontSize: '1.5rem', marginTop: '10px' }}
+        style={{ cursor: 'pointer', color: 'red', fontSize: '1.5rem', marginTop: '20px' }}
         title="Delete Note" 
       />
     </div>

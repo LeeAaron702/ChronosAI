@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
+import { Offcanvas } from "react-bootstrap";
+
 import Sidebar from "./Components/Sidebar/Sidebar";
 import NoteEditor from "./Components/NoteEditor/NoteEditor";
+import Chatbox from "./Components/Chatbox"; // Adjust the import path as necessary
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -13,6 +16,9 @@ const Dashboard = () => {
   const [notesTitles, setNotesTitles] = useState([]);
   const [currentNote, setCurrentNote] = useState(null);
   const [currentNoteId, setCurrentNoteId] = useState(null);
+
+  const [showOffcanvas, setShowOffcanvas] = useState(false);
+  const [selectedWorkspaceId, setSelectedWorkspaceId] = useState(null);
 
   // Fetch for notes
   const fetchAllNotesTitles = async (workspaceIds) => {
@@ -104,6 +110,11 @@ const Dashboard = () => {
     }
   };
 
+  const handleWorkspaceTitleClick = (workspaceId) => {
+    setSelectedWorkspaceId(workspaceId);
+    setShowOffcanvas(true);
+  };
+
   useEffect(() => {
     if (!user) {
       navigate("/");
@@ -138,6 +149,7 @@ const Dashboard = () => {
             userId={user.id}
             onNoteClick={handleNoteClick}
             currentNote={currentNote}
+            handleWorkspaceTitleClick={handleWorkspaceTitleClick}
           />
         </Col>
         <Col md={8} lg={9} xl={9}>
@@ -153,6 +165,19 @@ const Dashboard = () => {
             )}
           </div>
         </Col>
+        <Offcanvas
+          show={showOffcanvas}
+          onHide={() => setShowOffcanvas(false)}
+          placement="end"
+          backdrop="static"
+          >
+          <Offcanvas.Header closeButton className="pb-0">
+            <Offcanvas.Title>Workspace Chat</Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body className="p-3 pt-2 pb-1">
+            <Chatbox workspaceId={selectedWorkspaceId} />
+          </Offcanvas.Body>
+        </Offcanvas>
       </Row>
     </Container>
   );

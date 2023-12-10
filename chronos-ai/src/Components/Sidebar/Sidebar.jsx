@@ -12,6 +12,7 @@ const Sidebar = ({
   fetchNotes,
   onNoteClick,
   currentNote,
+  handleWorkspaceTitleClick
   
 }) => {
   // Custom hook to toggle accordion on small screens
@@ -78,6 +79,7 @@ const Sidebar = ({
       fetchNotes={fetchNotes}
       onNoteClick={onNoteClick}
       currentNote={currentNote}
+      onWorkspaceTitleClick={handleWorkspaceTitleClick}
     />
   );
 

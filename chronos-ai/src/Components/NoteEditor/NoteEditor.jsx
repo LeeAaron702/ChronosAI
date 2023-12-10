@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import NoteTitle from "./NoteTitle";
 import NoteContent from "./NoteContent";
 import Spinner from "react-bootstrap/Spinner";
-import NoteHeader from "./NoteHeader";
 
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

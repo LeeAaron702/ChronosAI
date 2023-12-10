@@ -42,11 +42,16 @@ const WorkspaceList = ({
   onCreateNote,
   onNoteClick,
   currentNote,
+  onWorkspaceTitleClick
 }) => {
   const [activeKey, setActiveKey] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedWorkspace, setSelectedWorkspace] = useState(null);
+  const [showChat, setShowChat] = useState(false);
 
+  const handleWorkspaceTitleClick = (workspaceId) => {
+    onWorkspaceTitleClick(workspaceId);
+  };
 
 
   const openEditModal = (workspace) => {
@@ -67,6 +72,7 @@ const WorkspaceList = ({
   const handleToggle = (eventKey) => {
     setActiveKey(activeKey === eventKey ? null : eventKey);
   };
+
 
   const titlePopover = (title) => (
     <Popover>
@@ -145,6 +151,7 @@ const WorkspaceList = ({
                         display: "block", // Ensure this behaves as a block-level element for width to work
                       }}
                       title={workspace.name}
+                      onClick={() => handleWorkspaceTitleClick(workspace.id)}
                     >
                       {workspace.name}
                     </span>
