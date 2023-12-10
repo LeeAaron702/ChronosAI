@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { getEmbedding } from "./openai";
+import { getEmbedding } from "./openAiEmbedding";
 import { notesIndex } from "./pinecone";
 
 const supabase = createClient(

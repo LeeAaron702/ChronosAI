@@ -1,7 +1,18 @@
 import { notesIndex } from "./pinecone";
-import openai, { getEmbedding } from "./openai";
+import { getEmbedding } from "./openAiEmbedding";
 import { createClient } from "@supabase/supabase-js";
 import { OpenAIStream, StreamingTextResponse } from "ai";
+
+import { OpenAI } from "openai";
+
+const apiKey = process.env.OPENAI_API_KEY;
+
+if (!apiKey) {
+  throw new Error("OpenAI API Key is not set");
+}
+
+const openai = new OpenAI(apiKey);
+
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
