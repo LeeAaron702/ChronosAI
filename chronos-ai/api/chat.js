@@ -9,6 +9,7 @@ const supabase = createClient(
 );
 
 export async function POST(req) {
+  console.log('chat.js')
   try {
     const body = await req.json();
     const messages = body.messages;

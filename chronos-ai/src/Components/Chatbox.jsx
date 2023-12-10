@@ -13,7 +13,7 @@ const Chatbox = ({ workspaceId }) => {
     setMessages,
     isLoading,
     error,
-  } = useChat();
+  } = useChat({ api: '/api/chat' });
 
   const inputRef = useRef(null);
   const scrollRef = useRef(null);

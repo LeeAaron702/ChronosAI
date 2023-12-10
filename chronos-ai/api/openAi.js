@@ -1,7 +1,9 @@
 import { OpenAI } from "openai";
 
 const apiKey = process.env.OPENAI_API_KEY;
+
 console.log('openai.js hit')
+
 if (!apiKey) {
   throw new Error("OpenAI API Key is not set");
 }
